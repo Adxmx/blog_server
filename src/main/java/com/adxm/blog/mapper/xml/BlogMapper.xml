@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.adxm.blog.mapper.BlogMapper">
+    <select id="queryBlogList" resultMap="blog_type_user_map">
+        select b.id, b.flag, b.title, b.is_recommend, b.is_published, b.description, b.modified_time, tp.id tp_id, tp.label tp_label
+        from t_blog b
+        inner join t_type tp on b.type_id=tp.id
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="queryBlogById" resultMap="blog_type_user_map">
+        select b.id, b.cover, b.flag, b.title, b.content, b.description, b.editor, b.is_recommend, b.is_recommend, b.is_copyright, b.is_published, b.is_anon, b.is_comment, b.is_reward, b.view, b.thumb, b.created_time, b.modified_time, b.type_id, b.user_id, tp.id tp_id, tp.label tp_label, u.id u_id, u.nickname u_nickname, u.avatar u_avatar
+        from t_blog b
+        inner join t_type tp on b.type_id=tp.id
+        inner join t_user u on b.user_id=u.id
+        ${ew.customSqlSegment}
+    </select>
+
+    <resultMap id="blog_type_user_map" type="Blog">
+        <id property="id" column="id" />
+        <result property="cover" column="cover" />
+        <result property="flag" column="flag" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="description" column="description" />
+        <result property="editor" column="editor" />
+        <result property="isRecommend" column="is_recommend" />
+        <result property="isCopyright" column="is_copyright" />
+        <result property="isPublished" column="is_published" />
+        <result property="isAnon" column="is_anon" />
+        <result property="isComment" column="is_comment" />
+        <result property="isReward" column="is_reward" />
+        <result property="view" column="view" />
+        <result property="thumb" column="thumb" />
+        <result property="createdTime" column="created_time" />
+        <result property="modifiedTime" column="modified_time" />
+        <result property="typeId" column="type_id" />
+        <result property="userId" column="user_id" />
+        <association property="type" javaType="Type">
+            <id property="id" column="tp_id" />
+            <result property="label" column="tp_label" />
+            <result property="createdTime" column="tp_created_time" />
+            <result property="modifiedTime" column="tp_modified_time" />
+        </association>
+        <association property="user" javaType="User">
+            <id property="id" column="u_id" />
+            <result property="username" column="u_username" />
+            <result property="nickname" column="u_nickname" />
+            <result property="avatar" column="u_avatar" />
+            <result property="createdTime" column="u_created_time" />
+            <result property="modifiedTime" column="u_modified_time" />
+        </association>
+    </resultMap>
+</mapper>
