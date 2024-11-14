@@ -2,14 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.adxm.blog.mapper.BlogMapper">
     <select id="queryBlogList" resultMap="blog_type_user_map">
-        select b.id, b.flag, b.title, b.is_recommend, b.is_published, b.description, b.modified_time, tp.id tp_id, tp.label tp_label
+        select b.id, b.cover, b.flag, b.title, b.description, b.view, b.thumb, b.created_time, b.modified_time, tp.id tp_id, tp.label tp_label, u.id u_id, u.nickname u_nickname, u.avatar u_avatar
         from t_blog b
         inner join t_type tp on b.type_id=tp.id
+        inner join t_user u on b.user_id=u.id
         ${ew.customSqlSegment}
     </select>
 
     <select id="queryBlogById" resultMap="blog_type_user_map">
-        select b.id, b.cover, b.flag, b.title, b.content, b.description, b.editor, b.is_recommend, b.is_recommend, b.is_copyright, b.is_published, b.is_anon, b.is_comment, b.is_reward, b.view, b.thumb, b.created_time, b.modified_time, b.type_id, b.user_id, tp.id tp_id, tp.label tp_label, u.id u_id, u.nickname u_nickname, u.avatar u_avatar
+        select b.id, b.cover, b.flag, b.title, b.content, b.description, b.editor, b.is_recommend, b.is_copyright, b.is_published, b.is_anon, b.is_comment, b.is_reward, b.view, b.thumb, b.created_time, b.modified_time, b.type_id, b.user_id, tp.id tp_id, tp.label tp_label, u.id u_id, u.nickname u_nickname, u.avatar u_avatar
         from t_blog b
         inner join t_type tp on b.type_id=tp.id
         inner join t_user u on b.user_id=u.id

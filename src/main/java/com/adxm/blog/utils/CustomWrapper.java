@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
  */
 public class CustomWrapper {
     // 自动生成查询条件wrapper
-    public static <T> Wrapper generateWrapper(String tableAlias, T t, String sorterField, String[] searchFields, String searchValue) {
+    public static <T> Wrapper generateWrapper(String tableAlias, T t, String sorterField, String[] searchFields, String searchValue, Integer limit) {
         try {
             QueryWrapper<T> wrapper = new QueryWrapper<>();
 
@@ -45,7 +45,12 @@ public class CustomWrapper {
                 wrapper.orderByAsc(sorterFlag != null && sorterFlag && sorterField.equals(underlineName), columnFields);
                 wrapper.orderByDesc(sorterFlag != null && !sorterFlag && sorterField.equals(underlineName), columnFields);
             }
-            System.out.println(sorterField + "====" + wrapper.toString());
+
+            // 长度限制
+            if (limit != null) {
+                wrapper.last("limit " + limit);
+            }
+
             return wrapper;
         } catch (Exception e) {
             e.printStackTrace();

@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/admin")
-public class BlogController {
+public class AdminBlogController {
 
     @Autowired
     private BlogService blogService;
@@ -39,9 +39,10 @@ public class BlogController {
 
     /******************************单个博客查询********************************************/
     @GetMapping("/blog/{id}")
-    public R blogDetail(@PathVariable(value = "id", required = true) Integer id) {
+    public R blogDetail(HttpServletRequest request, @PathVariable(value = "id", required = true) Integer id) {
+        int userId = (int) request.getAttribute("userId");
         R r = null;
-        Blog blog = blogService.blogDetail(id);
+        Blog blog = blogService.blogDetail(userId, id);
         if (blog == null) {
             r = R.fail().msg("博客不存在");
         } else {

@@ -58,16 +58,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public User userDetail(int id) {
-        // redisTemplate.opsForValue().set("uuid", "3687");
-        String value = (String) redisTemplate.opsForValue().get("uuid");
-        System.out.println(value + "=======================");
-
         User user = null;
-        try {
-            user = userMapper.selectById(id);
-        } catch (Exception e) {
-            // TODO 日志记录登录异常
-        }
+        user = userMapper.selectById(id);
         return user;
     }
 

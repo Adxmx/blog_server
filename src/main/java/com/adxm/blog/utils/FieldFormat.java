@@ -38,6 +38,5 @@ public class FieldFormat {
     public static void main(String[] args) {
         String str = "-createdTime";
         System.out.println(FieldFormat.humpToUnderline(str));
-        System.out.println(null == str);
     }
 }

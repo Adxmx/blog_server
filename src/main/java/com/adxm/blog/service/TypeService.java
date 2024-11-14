@@ -1,9 +1,11 @@
 package com.adxm.blog.service;
 
 import com.adxm.blog.entity.Type;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +16,8 @@ import java.util.Map;
 public interface TypeService extends IService<Type> {
 
     public Map<String, Object> typeRetrieve(Page<Type> page, Type type, String sorter);
+
+    public List<Type> typeRetrieve(Wrapper<Type> wrapper);
 
     public Type typeDetail(int id);
 

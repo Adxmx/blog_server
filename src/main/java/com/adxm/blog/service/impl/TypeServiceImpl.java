@@ -34,7 +34,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements Ty
     // 分页查询
     @Override
     public Map<String, Object> typeRetrieve(Page<Type> page, Type type, String sorter) {
-        Wrapper wrapper = CustomWrapper.generateWrapper("tp", type, sorter, null, null);
+        Wrapper wrapper = CustomWrapper.generateWrapper("tp", type, sorter, null, null, null);
         List<Type> types = typeMapper.queryTypeList(page, wrapper);
 
         Map<String, Object> map = new HashMap<>();
@@ -42,6 +42,12 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements Ty
         map.put("types", types);
 
         return map;
+    }
+
+    @Override
+    public List<Type> typeRetrieve(Wrapper<Type> wrapper) {
+        List<Type> types = typeMapper.selectList(wrapper);
+        return types;
     }
 
     @Override
@@ -90,6 +96,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements Ty
         }
         // 查重分类名字是否重复
         QueryWrapper<Type> wrapper =new QueryWrapper<>();
+        wrapper.ne("id", type.getId());
         wrapper.eq("label", type.getLabel());
         if(typeMapper.selectOne(wrapper) != null) {
             return false;

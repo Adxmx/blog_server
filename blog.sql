@@ -55,7 +55,7 @@ CREATE TABLE `t_type`  (
   `modified_time` datetime NOT NULL COMMENT '更新时间',
   `user_id` int(11) NOT NULL COMMENT '关联用户表',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '分类表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_user
@@ -71,5 +71,21 @@ CREATE TABLE `t_user`  (
   `modified_time` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for t_conf
+-- ----------------------------
+DROP TABLE IF EXISTS `t_conf`;
+CREATE TABLE `t_conf` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `name` varchar(127) NOT NULL COMMENT '配置名称',
+  `code` varchar(127) NOT NULL COMMENT '配置编码',
+  `config` json NOT NULL COMMENT '配置内容',
+  `description` varchar(1023) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '配置描述',
+  `created_time` datetime NOT NULL COMMENT '创建时间',
+  `modified_time` datetime NOT NULL COMMENT '更新时间',
+  `user_id` int NOT NULL COMMENT '关联用户表',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='配置表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @RestController
 @RequestMapping("/api/admin")
-public class UserController {
+public class AdminUserController {
     @Autowired
     private UserService userService;
 

@@ -6,6 +6,7 @@ import com.adxm.blog.service.BlogService;
 import com.adxm.blog.utils.CustomWrapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     private BlogMapper blogMapper;
 
     @Override
-    public Map<String, Object> blogRetrieve(int userId, Page<Blog> page, Blog blog, String sorter) {
+    public Map<String, Object> blogRetrieve(Integer userId, Page<Blog> page, Blog blog, String sorter) {
         // 插入登录者ID
         blog.setUserId(userId);
-        Wrapper wrapper = CustomWrapper.generateWrapper("b", blog, sorter, null, null);
+        Wrapper wrapper = CustomWrapper.generateWrapper("b", blog, sorter, null, null, null);
         List<Blog> blogs = blogMapper.queryBlogList(page, wrapper);
 
         Map<String, Object> map = new HashMap<>();
@@ -41,22 +42,25 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     }
 
     @Override
-    public Blog blogDetail(int id) {
+    public List<Blog> blogRetrieve(Wrapper<Blog> wrapper) {
+        List<Blog> blogs = blogMapper.selectList(wrapper);
+        return blogs;
+    }
+
+    @Override
+    public Blog blogDetail(Integer userId, Integer id) {
         // 添加查询条件
         Blog blog = new Blog();
         blog.setId(id);
-        // TODO 判断是否登录ID
-        if (true) {
-            blog.setUserId(1);
-        }
-        Wrapper wrapper = CustomWrapper.generateWrapper("b", blog, null, null, null);
+        blog.setUserId(userId);
+        Wrapper wrapper = CustomWrapper.generateWrapper("b", blog, null, null, null, null);
         return blogMapper.queryBlogById(wrapper);
     }
 
     // 插入操作
     @Override
     public boolean isBlogCreate(int userId, Blog blog) {
-        QueryWrapper<Blog> wrapper =new QueryWrapper<>();
+        QueryWrapper<Blog> wrapper = new QueryWrapper<>();
         wrapper.eq("title", blog.getTitle());
         // 查重，若重复存在则不插入
         if(blogMapper.selectOne(wrapper) == null) {
@@ -115,6 +119,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         }
         blogMapper.deleteById(id);
         return true;
+    }
+
+    @Override
+    public void fieldIncrement(String field, int id) {
+        UpdateWrapper<Blog> wrapper = new UpdateWrapper<>();
+        wrapper.setSql(String.format("%s = %s + 1", field, field)).eq("id", id);
+        blogMapper.update(null, wrapper);
     }
 
     // 检查是否是用户的博客

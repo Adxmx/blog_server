@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.adxm.blog.mapper.ConfMapper">
+    <select id="queryConfList" resultMap="conf_user_map">
+        select tc.id, tc.name, tc.code, tc.config, tc.description, tc.created_time, tc.modified_time, u.id u_id, u.nickname u_nickname
+        from t_conf tc
+        inner join t_user u on tc.user_id=u.id
+        ${ew.customSqlSegment}
+    </select>
+    
+    <resultMap id="conf_user_map" type="Conf">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="code" column="code" />
+        <result property="config" column="config" />
+        <result property="description" column="description" />
+        <result property="createdTime" column="created_time" />
+        <result property="modifiedTime" column="modified_time" />
+        <association property="user" javaType="User">
+            <id property="id" column="u_id" />
+            <result property="username" column="u_username" />
+            <result property="nickname" column="u_nickname" />
+            <result property="avatar" column="u_avatar" />
+            <result property="createdTime" column="u_created_time" />
+            <result property="modifiedTime" column="u_modified_time" />
+        </association>
+    </resultMap>
+</mapper>
