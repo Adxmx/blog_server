@@ -63,13 +63,14 @@ CREATE TABLE `t_type`  (
 DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user`  (
   `id` int(11) NOT NULL COMMENT '主键id',
-  `username` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名',
-  `password` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户密码',
-  `nickname` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户昵称',
-  `avatar` varchar(1023) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户头像地址',
+  `username` varchar(127) NOT NULL COMMENT '用户名',
+  `password` varchar(127) NOT NULL COMMENT '用户密码',
+  `nickname` varchar(127) NOT NULL COMMENT '用户昵称',
+  `avatar` varchar(1023) NOT NULL COMMENT '用户头像地址',
+  `signature` varchar(127) NOT NULL COMMENT '个性签名',
   `created_time` datetime NOT NULL COMMENT '创建时间',
   `modified_time` datetime NOT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------

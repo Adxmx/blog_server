@@ -33,7 +33,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         blog.setUserId(userId);
         Wrapper wrapper = CustomWrapper.generateWrapper("b", blog, sorter, null, null, null);
         List<Blog> blogs = blogMapper.queryBlogList(page, wrapper);
-
+        // 游客访问，清除匿名博客用户痕迹
+        if (userId == null) {
+            this.clearUserFromBlog(blogs);
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("total", page.getTotal());
         map.put("blogs", blogs);
@@ -54,7 +57,12 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         blog.setId(id);
         blog.setUserId(userId);
         Wrapper wrapper = CustomWrapper.generateWrapper("b", blog, null, null, null, null);
-        return blogMapper.queryBlogById(wrapper);
+        Blog blogResult = blogMapper.queryBlogById(wrapper);
+        // 游客访问，清除匿名博客用户痕迹
+        if (blogResult != null && userId == null) {
+            this.clearUserFromBlog(blogResult);
+        }
+        return blogResult;
     }
 
     // 插入操作
@@ -132,4 +140,20 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     public boolean isUserSelfBlog(int userId, int blogUserId) {
         return userId == blogUserId;
     }
+
+    // 匿名博客清除用户字段
+    public void clearUserFromBlog(List<Blog> blogs) {
+        for(Blog blog: blogs) {
+            this.clearUserFromBlog(blog);
+        }
+    }
+
+    // 匿名博客清除用户字段
+    public void clearUserFromBlog(Blog blog) {
+        if (blog.getIsAnon()) {
+            blog.setUserId(null);
+            blog.setUser(null);
+        }
+    }
+
 }

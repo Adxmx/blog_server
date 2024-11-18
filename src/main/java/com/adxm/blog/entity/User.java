@@ -27,6 +27,7 @@ public class User {
     private String password;
     private String nickname;
     private String avatar;
+    private String signature;
 
     @TableField(fill = FieldFill.INSERT)
     private Date createdTime;

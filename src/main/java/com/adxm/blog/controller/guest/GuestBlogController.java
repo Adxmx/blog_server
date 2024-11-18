@@ -65,7 +65,6 @@ public class GuestBlogController {
             // 补充查询排序
             if (!StringUtil.isNullOrEmpty(sorter)) {
                 String field = FieldFormat.humpToUnderline(sorter);
-                System.out.println("sorter==============" + field);
                 if (field.startsWith("-")) {
                     queryWrapper.orderByDesc(field.substring(1));
                 } else {
@@ -78,6 +77,10 @@ public class GuestBlogController {
             }
         // 查询指定条件下的博客列表
         } else {
+            // 游客查询指定用户下博客列表，则只查询非匿名博客
+            if (blog.getUserId() != null) {
+                blog.setIsAnon(false);
+            }
             Wrapper wrapper = CustomWrapper.generateWrapper(null, blog, sorter, null, null, limit);
             queryWrapper = (QueryWrapper) wrapper;
         }
@@ -96,6 +99,10 @@ public class GuestBlogController {
                       Blog blog) {
         // 限制查询已发布博客
         blog.setIsPublished(true);
+        // 游客查询指定用户下博客列表，则只查询非匿名博客
+        if (blog.getUserId() != null) {
+            blog.setIsAnon(false);
+        }
         // 创建page对象
         Page<Blog> page = new Page<>(current, pageSize);
         Map<String, Object> map = blogService.blogRetrieve(null, page, blog, sorter);
