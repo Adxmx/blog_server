@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Adxm
@@ -20,4 +21,6 @@ public interface BlogMapper extends BaseMapper<Blog> {
     public List<Blog> queryBlogList(Page<Blog> page, @Param(Constants.WRAPPER) Wrapper<Blog> wrapper);
 
     public Blog queryBlogById(@Param(Constants.WRAPPER) Wrapper<Blog> wrapper);
+
+    public Map<String, Object> queryBlogOverview(@Param(Constants.WRAPPER) Wrapper<Blog> wrapper);
 }

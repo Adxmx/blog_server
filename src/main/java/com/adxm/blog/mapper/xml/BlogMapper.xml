@@ -17,6 +17,13 @@
         ${ew.customSqlSegment}
     </select>
 
+    <select id="queryBlogOverview" resultType="map">
+        select count(*) as blogCount, count(distinct type_id) typeCount, count(distinct user_id) userCount
+        from t_blog b
+        ${ew.customSqlSegment}
+    </select>
+
+
     <resultMap id="blog_type_user_map" type="Blog">
         <id property="id" column="id" />
         <result property="cover" column="cover" />

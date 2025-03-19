@@ -1,5 +1,6 @@
 package com.adxm.blog.controller.guest;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,16 @@ public class GuestTypeController {
 
     /******************************标签条目查询********************************************/
     @GetMapping("/type/item")
-    public R typeItem(@RequestParam(value = "limit", required = false, defaultValue = "15") Integer limit, Type type) {                          
+    public R typeItem(@RequestParam(value = "limit", required = false, defaultValue = "15") Integer limit,
+                      @RequestParam(value = "ids", required = false) Integer[] ids,
+                      Type type) {
         Wrapper wrapper = CustomWrapper.generateWrapper(null, type, "-createdTime", null, null, limit);
         QueryWrapper queryWrapper = (QueryWrapper) wrapper;
+
+        if (ids != null && ids.length > 0) {
+            queryWrapper.in("id", ids);
+        }
+
         queryWrapper.select("id", "label");
         List<Type> types = typeService.typeRetrieve(queryWrapper);
         R r = R.succeed().msg("查询成功").data("types", types);

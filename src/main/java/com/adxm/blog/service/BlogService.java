@@ -17,6 +17,8 @@ public interface BlogService extends IService<Blog> {
 
     public Map<String, Object> blogRetrieve(Integer userId, Page<Blog> page, Blog blog, String sorter);
 
+    public Map<String, Object> blogRetrieve(Boolean isAdmin, Wrapper<Blog> wrapper, Page<Blog> page);
+
     public List<Blog> blogRetrieve(Wrapper<Blog> wrapper);
 
     public Blog blogDetail(Integer userId, Integer id);
@@ -28,4 +30,6 @@ public interface BlogService extends IService<Blog> {
     public boolean isBlogDelete(int userId, int id);
 
     public void fieldIncrement(String field, int id);
+
+    public Map<String, Object> blogOverview(Wrapper<Blog> wrapper);
 }

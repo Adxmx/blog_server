@@ -45,6 +45,20 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     }
 
     @Override
+    public Map<String, Object> blogRetrieve(Boolean isAdmin, Wrapper<Blog> wrapper, Page<Blog> page) {
+        List<Blog> blogs = blogMapper.queryBlogList(page, wrapper);
+        // 游客访问，清除匿名博客用户痕迹
+        if (!isAdmin) {
+            this.clearUserFromBlog(blogs);
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", page.getTotal());
+        map.put("blogs", blogs);
+
+        return map;
+    }
+
+    @Override
     public List<Blog> blogRetrieve(Wrapper<Blog> wrapper) {
         List<Blog> blogs = blogMapper.selectList(wrapper);
         return blogs;
@@ -55,7 +69,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         // 添加查询条件
         Blog blog = new Blog();
         blog.setId(id);
-        blog.setUserId(userId);
+        // 游客访问，仅访问发布博客
+        if (userId == null) {
+            blog.setIsPublished(true);
+        } else {
+            // 用户访问，仅查询用户博客
+            blog.setUserId(userId);
+        }
         Wrapper wrapper = CustomWrapper.generateWrapper("b", blog, null, null, null, null);
         Blog blogResult = blogMapper.queryBlogById(wrapper);
         // 游客访问，清除匿名博客用户痕迹
@@ -134,6 +154,12 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         UpdateWrapper<Blog> wrapper = new UpdateWrapper<>();
         wrapper.setSql(String.format("%s = %s + 1", field, field)).eq("id", id);
         blogMapper.update(null, wrapper);
+    }
+
+    @Override
+    public Map<String, Object> blogOverview(Wrapper<Blog> wrapper) {
+        Map<String, Object> overview = blogMapper.queryBlogOverview(wrapper);
+        return overview;
     }
 
     // 检查是否是用户的博客

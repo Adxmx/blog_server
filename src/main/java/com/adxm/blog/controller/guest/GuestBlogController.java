@@ -57,35 +57,20 @@ public class GuestBlogController {
                       @RequestParam(value = "sorter", required = false) String sorter,
                       @RequestParam(value = "typeIds", required = false) Integer[] typeIds,
                       Blog blog) {
-        QueryWrapper queryWrapper = null;
+        // 游客查询指定用户下博客列表，则只查询非匿名博客
+        if (blog.getUserId() != null) {
+            blog.setIsAnon(false);
+        }
+
+        Wrapper wrapper = CustomWrapper.generateWrapper(null, blog, sorter, null, null, limit);
+        QueryWrapper queryWrapper = (QueryWrapper) wrapper;
         // 查询分类列表目录下的博客列表
         if (typeIds != null && typeIds.length > 0) {
-            queryWrapper = new QueryWrapper(); 
             queryWrapper.in("type_id", typeIds);
-            // 补充查询排序
-            if (!StringUtil.isNullOrEmpty(sorter)) {
-                String field = FieldFormat.humpToUnderline(sorter);
-                if (field.startsWith("-")) {
-                    queryWrapper.orderByDesc(field.substring(1));
-                } else {
-                    queryWrapper.orderByAsc(field);
-                }
-            }
-            // 补充查询长度
-            if (limit != null) {
-                queryWrapper.last("limit " + limit);
-            }
-        // 查询指定条件下的博客列表
-        } else {
-            // 游客查询指定用户下博客列表，则只查询非匿名博客
-            if (blog.getUserId() != null) {
-                blog.setIsAnon(false);
-            }
-            Wrapper wrapper = CustomWrapper.generateWrapper(null, blog, sorter, null, null, limit);
-            queryWrapper = (QueryWrapper) wrapper;
         }
         queryWrapper.eq("is_published", true);
         queryWrapper.select("id", "title", "cover", "description", "created_time");
+
         List<Blog> blogs = blogService.blogRetrieve(queryWrapper);
         R r = R.succeed().msg("查询成功").data("blogItems", blogs);
         return r;
@@ -96,16 +81,23 @@ public class GuestBlogController {
     public R blogList(@RequestParam(value = "current", required = false, defaultValue = "1") Integer current,
                       @RequestParam(value = "pageSize", required = false, defaultValue = "5") Integer pageSize,
                       @RequestParam(value = "sorter", required = false) String sorter,
+                      @RequestParam(value = "typeIds", required = false) Integer[] typeIds,
                       Blog blog) {
         // 限制查询已发布博客
         blog.setIsPublished(true);
-        // 游客查询指定用户下博客列表，则只查询非匿名博客
+        // 游客查询指定用户下博客列表时排除用户匿名博客
         if (blog.getUserId() != null) {
             blog.setIsAnon(false);
         }
+        Wrapper wrapper = CustomWrapper.generateWrapper("b", blog, sorter, null, null, null);
+        QueryWrapper queryWrapper = (QueryWrapper) wrapper;
+
+        if (typeIds != null && typeIds.length > 0) {
+            queryWrapper.in("type_id", typeIds);
+        }
         // 创建page对象
         Page<Blog> page = new Page<>(current, pageSize);
-        Map<String, Object> map = blogService.blogRetrieve(null, page, blog, sorter);
+        Map<String, Object> map = blogService.blogRetrieve(false, queryWrapper, page);
         R r = R.succeed().msg("查询成功").data(map);
         return r;
     }
@@ -117,5 +109,24 @@ public class GuestBlogController {
         blogAsync.thumbIncrement(id);
         return R.succeed().msg("点赞成功");
     }
-    
+
+    /******************************博客概况接口********************************************/
+    @GetMapping("/blog/overview")
+    public R blogOverview(@RequestParam(value = "typeIds", required = false) Integer[] typeIds,
+                          Blog blog) {
+        // 游客仅查询发布的博客
+        blog.setIsPublished(true);
+
+        Wrapper wrapper = CustomWrapper.generateWrapper("b", blog, null, null, null, null);
+        QueryWrapper queryWrapper = (QueryWrapper) wrapper;
+
+        if (typeIds != null && typeIds.length > 0) {
+            queryWrapper.in("type_id", typeIds);
+        }
+
+        Map map = blogService.blogOverview(wrapper);
+        R r = R.succeed().msg("查询成功").data(map);
+        return r;
+    }
+
 }
